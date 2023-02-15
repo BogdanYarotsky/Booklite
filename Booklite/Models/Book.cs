@@ -1,21 +1,13 @@
 ﻿namespace Booklite.Models;
-
-using System;
-
-public class Book
+public record Book(string Title, string ImageUrl, float Rating, int TotalReviews, ICollection<string> Authors)
 {
-    public BookInfo Info { get; }
-    public double Score { get; }
-
-    public Book(BookInfo bookInfo)
+    // think about threshold for reviews count, after certain amount not that important
+    private const double _ratingWeight = 0.92;
+    private const double _totalReviewsWeight = 0.08;
+    public double Score => CalculateScore();
+    private double CalculateScore()
     {
-        Info = bookInfo;
-        Score = CalculateScore(bookInfo);
-    }
-
-    private double CalculateScore(BookInfo book)
-    {
-        var weighted = book.Rating * 0.3 + Math.Log(book.RatingsCount) * 0.7; 
-        return double.Round(weighted, 2);
+        var score = Rating * _ratingWeight + Math.Log(TotalReviews) * _totalReviewsWeight;
+        return double.Round(score, 2);
     }
 }

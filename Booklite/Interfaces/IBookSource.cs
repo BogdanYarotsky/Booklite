@@ -4,5 +4,5 @@ using Booklite.Models;
 
 public interface IBookSource
 {
-    Task<ICollection<BookInfo>> GetBooksAsync(string query); 
+    Task<ICollection<Book>> GetBooksAsync(string query); 
 }
