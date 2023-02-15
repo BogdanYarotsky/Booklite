@@ -1,38 +1,41 @@
 using AngleSharp;
 using Booklite.Services;
 
-[TestFixture]
-public class GoodreadsTests
+namespace Booklite.Tests
 {
-    private Goodreads goodreads;
-
-    [SetUp]
-    public void Setup()
+    [TestFixture]
+    public class GoodreadsTests
     {
-        var config = Configuration.Default.WithDefaultLoader();
-        var browsingContext = BrowsingContext.New(config);
-        goodreads = new Goodreads(browsingContext);
-    }
+        private Goodreads goodreads;
 
-    [Test]
-    public async Task GetBooksTest()
-    {
-        // Arrange
-        string query = "parenting";
-
-        // Act
-        var books = await goodreads.GetBooksAsync(query);
-
-        // Assert
-        Assert.That(books, Is.Not.Null);
-        Assert.That(books.Count > 0);
-
-        foreach (var book in books)
+        [SetUp]
+        public void Setup()
         {
-            Assert.That(book.Title, Is.Not.Null);
-            Assert.That(!string.IsNullOrEmpty(book.Title));
-            Assert.IsNotNull(book.ImageUrl);
-            Assert.IsNotNull(book.Authors);
+            var config = Configuration.Default.WithDefaultLoader();
+            var browsingContext = BrowsingContext.New(config);
+            goodreads = new Goodreads(browsingContext);
+        }
+
+        [Test]
+        public async Task GetBooksTest()
+        {
+            // Arrange
+            var query = "parenting";
+
+            // Act
+            var books = await goodreads.GetBooksAsync(query);
+
+            // Assert
+            Assert.That(books, Is.Not.Null);
+            Assert.That(books, Is.Not.Empty);
+
+            foreach (var book in books)
+            {
+                Assert.That(book.Title, Is.Not.Null);
+                Assert.That(!string.IsNullOrEmpty(book.Title));
+                Assert.That(book.ImageUrl, Is.Not.Null);
+                Assert.That(book.Authors, Is.Not.Null);
+            }
         }
     }
 }
