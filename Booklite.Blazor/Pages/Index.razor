@@ -2,8 +2,44 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<MudTextField @bind-Value="_searchQuery" Label="Search Goodreads" Variant="Variant.Outlined"></MudTextField>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnSearchButtonClicked">Let's Go</MudButton>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@if (_isSearching)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+
+@foreach (var book in _books)
+{
+    <MudCard>
+        <MudCardContent>
+            <MudImage Src=@book.ImageUrl Alt=@book.Title Elevation="25" Class="rounded-lg" />
+            <MudText Typo="Typo.h5">@book.Title</MudText>
+            <MudText Typo="Typo.body2">@book.Rating - @book.TotalReviews</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Text" Color="Color.Primary" Href="@book.Url">Goodreads</MudButton>
+        </MudCardActions>
+    </MudCard>
+}
+
+
+@inject Goodreads goodreads
+@code {
+    bool _isSearching;
+    List<Book> _books = new();
+    string _searchQuery = string.Empty;
+
+    async Task OnSearchButtonClicked()
+    {
+        _isSearching = true;
+        var books = await goodreads.GetBooksAsync(_searchQuery);
+        _books = books.OrderByDescending(b => b.Score).ToList();
+        _isSearching = false;
+    }
+
+}
+
+

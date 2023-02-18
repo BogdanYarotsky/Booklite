@@ -26,6 +26,6 @@ public class BookTests
 
     public static Book New(string title, float rating, int totalReviews)
     {
-        return new Book(title, "", rating, totalReviews, new List<string>());
+        return new Book(title, "", rating, totalReviews, new List<string>(), "");
     }
 }

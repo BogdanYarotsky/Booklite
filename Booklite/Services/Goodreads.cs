@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 public class Goodreads : IBookSource
 {
+    private const string _goodreadsUrl = "https://www.goodreads.com";
     private readonly IBrowsingContext _browsingContext;
     private const int _totalPagesToParse = 3;
 
@@ -54,8 +55,10 @@ public class Goodreads : IBookSource
 
     private static Book ToBook(IElement element)
     {
-        var title = element.QuerySelector(".bookTitle")?.TextContent.Trim() ?? "";
+        var titleElement = element.QuerySelector(".bookTitle");
 
+        var title = titleElement?.TextContent.Trim() ?? "";
+        var url = titleElement.GetAttribute("href");
         var imageUrl = element.QuerySelector(".bookCover")?.GetAttribute("src") ?? "";
 
         var authors = element.QuerySelectorAll(".authorName")
@@ -68,6 +71,6 @@ public class Goodreads : IBookSource
         _ = float.TryParse(strings[0], out var rating);
         _ = int.TryParse(strings[4].Replace(",", ""), out var totalRatings);
 
-        return new Book(title, imageUrl, rating, totalRatings, authors);
+        return new Book(title, imageUrl, rating, totalRatings, authors, _goodreadsUrl + url);
     }
 }

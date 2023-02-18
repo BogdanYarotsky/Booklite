@@ -5,7 +5,7 @@ namespace Booklite.Tests;
 [TestFixture]
 public class GoodreadsTests
 {
-    private readonly Goodreads _goodreads = new(BrowsingContext.New());
+    private readonly Goodreads _goodreads = new(BrowsingContext.New(Configuration.Default.WithDefaultLoader()));
 
     [Test]
     public async Task GetBooksTest()
@@ -15,6 +15,8 @@ public class GoodreadsTests
 
         // Act
         var books = await _goodreads.GetBooksAsync(query);
+
+        var sortedBooks = books.OrderByDescending(b => b.Score).ToList();
 
         // Assert
         Assert.That(books, Is.Not.Null);

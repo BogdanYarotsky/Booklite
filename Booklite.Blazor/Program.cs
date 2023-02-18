@@ -1,6 +1,7 @@
+using AngleSharp;
 using Booklite.Blazor.Data;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using Booklite.Services;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddMudServices();
+
+// angle sharp
+builder.Services.AddTransient(_ => BrowsingContext.New(Configuration.Default.WithDefaultLoader()));
+
+
+
+builder.Services.AddTransient<Goodreads>();
 
 var app = builder.Build();
 
